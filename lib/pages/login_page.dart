@@ -1,6 +1,7 @@
 
 import 'package:chatapp/helpers/mostrar_alerta.dart';
 import 'package:chatapp/services/auth_service.dart';
+import 'package:chatapp/services/socket_service.dart';
 import 'package:chatapp/widgets/boton_azul.dart';
 import 'package:chatapp/widgets/custom_input.dart';
 import 'package:chatapp/widgets/labels.dart';
@@ -51,6 +52,8 @@ class __FormState extends State<_Form> {
   Widget build(BuildContext context) {
 
     final authService = Provider.of<AuthService>(context);
+    final socketService = Provider.of<SocketService>(context);
+
 
     return Container(
       margin: EdgeInsets.only(top:40),
@@ -82,6 +85,7 @@ class __FormState extends State<_Form> {
 
               if(loginOk){
                 //navegar a otra pantalla
+                socketService.connect();
                 Navigator.pushReplacementNamed(context, 'usuarios');
               }else{
                 //mostrar alerta

@@ -43,7 +43,6 @@ class AuthService with ChangeNotifier {
     final resp = await http.post(uri,
         body: jsonEncode(data), headers: {'Content-Type': 'application/json'});
 
-
     this.autenticando = false;
 
     if (resp.statusCode == 200) {
@@ -68,7 +67,6 @@ class AuthService with ChangeNotifier {
     final resp = await http.post(uri,
         body: jsonEncode(data), headers: {'Content-Type': 'application/json'});
 
-
     this.autenticando = false;
 
     if (resp.statusCode == 200) {
@@ -89,21 +87,21 @@ class AuthService with ChangeNotifier {
 
     final uri = Uri.parse('${Environment.apiUrl}/login/renew');
 
-    final resp = await http.get(uri,
-        headers: {'Content-Type': 'application/json', 'x-token': token!});
+    if (token != null) {
+      final resp = await http.get(uri,
+          headers: {'Content-Type': 'application/json', 'x-token': token});
 
+      if (resp.statusCode == 200) {
+        final loginResponse = loginResponseFromJson(resp.body);
+        this.usuario = loginResponse.usuario;
 
-    if (resp.statusCode == 200) {
-      final loginResponse = loginResponseFromJson(resp.body);
-      this.usuario = loginResponse.usuario;
+        await this._guardarToken(loginResponse.token);
 
-      await this._guardarToken(loginResponse.token);
-
-      return true;
-
-    } else {
-      this.logout();
-      return false;
+        return true;
+      } else {
+        this.logout();
+        return false;
+      }
     }
   }
 
